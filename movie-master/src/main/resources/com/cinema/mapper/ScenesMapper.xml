@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.mapper.ScenesMapper">
+
+    <select id="getTotalPrice" resultType="com.cinema.bean.Scenes">
+        SELECT
+            s.scenes_id,
+            c.cinema_name,
+            sum( s.price ) as total_price
+        FROM
+            t_ticket t,
+            t_scenes s,
+            t_hall h,
+            t_cinema c
+        WHERE
+            t.scenes_id = s.scenes_id
+          AND s.hall_id = h.hall_id
+          AND h.cinema_id = c.cinema_id
+        GROUP BY c.cinema_id
+    </select>
+
+    <select id="getAllByMovieId" resultType="com.cinema.bean.Scenes">
+        SELECT *
+        from t_scenes
+        where  t_scenes.movie_id=#{movieId}
+    </select>
+
+    <select id="getAllByHallId" resultType="com.cinema.bean.Scenes">
+        SELECT *
+        from t_scenes
+        where  t_scenes.hall_id=#{hallId} and date_end > now()
+        order by date_start
+    </select>
+</mapper>

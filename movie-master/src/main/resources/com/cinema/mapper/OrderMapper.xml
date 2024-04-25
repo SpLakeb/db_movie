@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.mapper.OrderMapper">
+    <resultMap id="orderMap" type="com.cinema.bean.Order">
+        <id property="orderId" column="order_id"/>
+        <result property="orderDate" column="order_date"/>
+        <result property="movieName" column="movie_name"/>
+        <result property="movieId" column="movie_id"/>
+        <result property="imgUrl" column="img_url"/>
+        <result property="cinemaName" column="cinema_name"/>
+        <result property="hallName" column="hall_name"/>
+        <result property="dateStart" column="date_start"/>
+        <result property="price" column="price"/>
+    </resultMap>
+
+    <select id="getOrders" resultMap="orderMap">
+        SELECT
+            o.order_id,
+            o.order_date,
+            m.movie_name,
+            m.movie_id,
+            m.img_url,
+            c.cinema_name,
+            h.hall_name,
+            s.date_start,
+            COUNT(t.seat_no) * s.price as price
+        FROM
+            t_order o,
+            t_ticket t,
+            t_scenes s,
+            t_movie m,
+            t_cinema c,
+            t_hall h
+        WHERE
+            o.order_id = t.order_id
+          AND t.scenes_id = s.scenes_id
+          AND s.movie_id = m.movie_id
+          AND s.hall_id = h.hall_id
+          AND h.cinema_id = c.cinema_id
+          AND o.user_id = #{userId}
+        GROUP BY o.order_id
+    </select>
+
+    <resultMap id="orderDetailsMap" type="com.cinema.bean.Order">
+        <result property="movieName" column="movie_name"/>
+        <result property="dateStart" column="date_start"/>
+        <result property="cinemaName" column="cinema_name"/>
+        <result property="seatNo" column="seat_no"/>
+        <result property="price" column="price"/>
+    </resultMap>
+
+    <select id="getOrderDetails" resultMap="orderDetailsMap">
+        SELECT
+            m.movie_name,
+            s.date_start,
+            c.cinema_name,
+            t.seat_no,
+            s.price
+        FROM
+            t_order o,
+            t_ticket t,
+            t_scenes s,
+            t_movie m,
+            t_cinema c,
+            t_hall h
+        WHERE
+            o.order_id = t.order_id
+          AND t.scenes_id = s.scenes_id
+          AND s.movie_id = m.movie_id
+          AND s.hall_id = h.hall_id
+          AND h.cinema_id = c.cinema_id
+          AND o.user_id = #{userId}
+          AND o.order_id = #{orderId}
+    </select>
+</mapper>

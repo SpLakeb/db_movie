@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.mapper.TypeMapper">
+    <select id="getTypeNameCount" resultType="com.cinema.bean.Type">
+        SELECT t_type.type_name,count(1) as count
+        from t_movietype
+                 JOIN t_movie on t_movietype.movie_id = t_movie.movie_id
+                 JOIN t_type ON t_type.type_id = t_movietype.type_id
+
+        WHERE t_movietype.movie_id in (
+            SELECT top.movie_id from(
+
+                                        SELECT movie_id
+                                        FROM t_movie m
+                                        ORDER BY m.daily_box_office DESC
+                                            LIMIT 0,10
+                                    )as top
+        )
+        GROUP BY t_type.type_name
+    </select>
+</mapper>

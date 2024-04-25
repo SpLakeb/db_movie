@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.mapper.PerformerMapper">
+    <select id="getMasterpiece" resultType="com.cinema.bean.Movie">
+        SELECT m.movie_id   as movieId,
+               m.movie_name as movieName,
+               m.img_url    as imgUrl
+        FROM t_performer p,
+             t_role r,
+             t_movie m
+        WHERE p.performer_id = r.performer_id
+          AND r.movie_id = m.movie_id
+          AND p.performer_id = #{performerId}
+        ORDER BY m.box_office desc
+        limit 0,3
+    </select>
+
+
+    <select id="getAllMovies" resultType="com.cinema.bean.Movie">
+        SELECT m.movie_id,
+               m.movie_name,
+               m.release_time,
+               m.img_url
+        FROM t_performer p,
+             t_role r,
+             t_movie m
+        WHERE p.performer_id = r.performer_id
+          AND r.movie_id = m.movie_id
+          AND p.performer_id = #{performerId}
+        ORDER BY m.release_time desc
+    </select>
+
+    <select id="getSuggestionsPerformer" resultType="com.cinema.bean.Performer">
+        SELECT
+            img_url,name,performer_id
+        FROM
+            t_performer
+        WHERE
+            `name` LIKE #{keyWord}
+        ORDER BY
+            LOCATE(
+                    #{keyWord},
+                    name) LIMIT 0,2
+    </select>
+</mapper>

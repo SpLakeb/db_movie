@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.mapper.HallMapper">
+
+
+    <select id="getByCinemaId" resultType="com.cinema.bean.Hall">
+        SELECT *
+        from t_hall
+        where  t_hall.cinema_id=#{cinemaId}
+
+    </select>
+    <select id="getAllByHallId" resultType="com.cinema.bean.Hall">
+        SELECT *
+        from t_hall
+        where  t_hall.hall_Id=#{hallId}
+    </select>
+    <select id="getAllByType" resultType="com.cinema.bean.Hall">
+        SELECT *
+        from t_hall
+        where  t_hall.type=#{type}
+    </select>
+    <select id="getByHallName" resultType="com.cinema.bean.Hall">
+        SELECT *
+        from t_hall
+        where  t_hall.hall_name=#{hallName}
+    </select>
+    <select id="getAllByCinemaId" resultType="com.cinema.bean.Hall">
+        SELECT *
+        from t_hall
+        where  t_hall.cinema_id=#{cinemaId}
+    </select>
+
+</mapper>

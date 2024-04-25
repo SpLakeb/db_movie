@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cinema.mapper.CinemaMapper">
+
+    <select id="getAllMoviesInCinema" resultType="com.cinema.bean.Movie">
+        SELECT DISTINCT(m.movie_id),
+                       m.movie_name,
+                       m.img_url,
+                       m.score,
+                       m.comments_number,
+                       m.img_url,
+                       m.duration
+        FROM t_movie m,
+             t_scenes s,
+             t_hall h,
+             t_cinema c
+        where m.movie_id = s.movie_id
+          and s.hall_id in
+              (
+                  SELECT h.hall_id
+                  FROM t_hall h,
+                       t_cinema c
+                  WHERE h.cinema_id = c.cinema_id
+                    and c.cinema_id = #{cinemaId}
+              )
+    </select>
+
+    <select id="getAllScenes" resultType="com.cinema.bean.Scenes">
+        SELECT DISTINCT(s.movie_id),
+                       s.date_start,
+                       s.date_end,
+                       s.hall_id,
+                        h.hall_name,
+                       s.price,
+                       s.scenes_id
+        FROM t_movie m,
+             t_hall h,
+             t_scenes s,
+             t_cinema
+        WHERE s.movie_id = #{movieId} and s.hall_id = h.hall_id
+          AND s.hall_id in
+              (
+                  SELECT h.hall_id
+                  FROM t_hall h,
+                       t_cinema c
+                  WHERE h.cinema_id = c.cinema_id
+                    and c.cinema_id = #{cinemaId}
+              ) and s.date_start > now()
+        ORDER BY s.date_start ASC
+    </select>
+
+
+    <select id="getAllCinemaBrand" resultType="java.lang.String">
+        SELECT DISTINCT(brand)
+        FROM t_cinema
+    </select>
+
+
+    <select id="getAllType" resultType="java.lang.String">
+        SELECT DISTINCT(h.type)
+        FROM t_cinema c,
+             t_hall h
+        WHERE c.cinema_id = h.cinema_id
+    </select>
+
+
+    <select id="getSuggestionsCinema" resultType="com.cinema.bean.Cinema">
+        SELECT
+            cinema_name,cinema_id
+        FROM
+            t_cinema
+        WHERE
+            `cinema_name` LIKE #{keyWord}
+        ORDER BY
+            LOCATE(
+                    #{keyWord},
+                    cinema_name) LIMIT 0,2
+    </select>
+
+
+</mapper>
